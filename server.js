@@ -1,5 +1,6 @@
   var express = require('express'),
     bodyParser = require('body-parser'),
+    marked = require('marked'),
     _ = require('underscore'),
     config = require('config'),
     GithubClient = require('./lib/github-client'),
@@ -24,6 +25,16 @@ function urlPathToSourceFile(urlPath) {
     return null;
   }
 }
+
+app.get('/hubbub.js', function (req, res) {
+  res.sendFile('./client/hubub.js',
+              {
+                root: __dirname,
+                headers: {
+                  'content-type': 'application/javascript'
+                }
+              });
+});
 
 app.param('site', function (req, res, next, siteId) {
   if (_.has(sites, siteId)) {
@@ -65,8 +76,7 @@ app.post('/api/:site/comments', function (req, res) {
 
   commenter.createComment(sourcePath, metadata, comment)
     .then(function () {
-      console.log('OK');
-      res.json({status: 'ok'});
+      res.json({html: marked(preprocessedComment)});
     })
     .catch(function (err) {
       // console.log(err);
