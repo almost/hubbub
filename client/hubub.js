@@ -18,8 +18,8 @@
     xmlhttp.onload = function (e) {
       if (xmlhttp.readyState === 4) {
         if (xmlhttp.status >= 200 && xmlhttp.status < 300) {
-          var response = JSON.parse(xhr.responseText);
-          var commentsContainer = document.querySelector('form[data-pendingcomment]');         
+          var response = JSON.parse(xmlhttp.responseText);
+          var commentsContainer = document.querySelector('[data-pendingcomment]');         
           if (commentsContainer) {
             var commentEl = document.createElement('div');
             commentEl.innerHTML = response.html;
