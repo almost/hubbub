@@ -1,0 +1,15 @@
+{
+  "commentUser" :{
+    "auth": {"user": "hubbubcomments", "pass": "XXXXX"},
+    "user": "hubbubcomments"
+  },
+  "sites": {
+    "default": {
+      "user": "almost",
+      "repo": "Sample-Jekyll-Site",
+      "branch": "master",
+      "commentsEndMarker": "COMMENTS_END"
+    }
+  },
+  "commentTemplate": "Comment by <%- metadata.name %>\n--------\n<%= comment %>\n"
+}
