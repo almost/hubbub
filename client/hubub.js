@@ -25,13 +25,15 @@
             commentEl.innerHTML = response.html;
             commentsContainer.addChild(commentEl);
           }
+          alert("Comment sent!");
+          form.querySelector('[name=comment]').value = "";
         } else {
-          alert("Failed to send comment: " + xhr.statusText);
+          alert("Failed to send comment: " + xmlhttp.statusText);
         }
       }
     };
     xmlhttp.onerror = function (e) {
-      alert("Failed to send comment: " + xhr.statusText);
+      alert("Failed to send comment: " + xmlhttp.statusText);
     };
     
     // TOOD: Get post path from canonical meta tag if it's present
