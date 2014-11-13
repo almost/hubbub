@@ -20,12 +20,8 @@ var sites = config.get('sites');
 
 // Convert a post url path to a source file path within git
 function urlPathToSourceFile(urlPath) {
-  var match = (/\/[^\/]+\/(.*)\//).exec(urlPath);
-  if (match) {
-    return "_posts/" + match[1].replace(/\//g, '-') + ".markdown";
-  } else {
-    return null;
-  }
+  // TODO: Make this configurable!
+  return "_posts/" + urlPath.split('/').slice(-5, -1).join('-') + ".markdown";
 }
 
 app.get('/hubbub.js', function (req, res) {
