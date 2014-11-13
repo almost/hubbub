@@ -72,7 +72,7 @@ app.post('/api/:site/comments', function (req, res) {
   var sourcePath = urlPathToSourceFile(postPath);
   var preprocessedComment = commentTemplate({comment: comment, metadata: metadata});
 
-  commenter.createComment(sourcePath, metadata, comment)
+  commenter.createComment(sourcePath, metadata, preprocessedComment)
     .then(function () {
       res.json({html: marked(preprocessedComment)});
     })
