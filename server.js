@@ -1,6 +1,7 @@
   var express = require('express'),
     bodyParser = require('body-parser'),
     marked = require('marked'),
+    cors = require('cors'),
     _ = require('underscore'),
     config = require('config'),
     GithubClient = require('./lib/github-client'),
@@ -12,6 +13,7 @@
 
 app.use(bodyParser.json());
 
+app.use(cors());
 
 var commentTemplate = _.template(config.get('commentTemplate'));
 var sites = config.get('sites');

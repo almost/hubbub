@@ -7,7 +7,7 @@
     "default": {
       "user": "almost",
       "repo": "Sample-Jekyll-Site",
-      "branch": "master",
+      "branch": "gh-pages",
       "commentsEndMarker": "COMMENTS_END"
     }
   },
