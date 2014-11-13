@@ -1,0 +1,26 @@
+{
+  "name": "",
+  "version": "0.1.0",
+  "description": "Comments for Jekyll blogs as GitHub Pull Requests",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.9.2",
+    "express": "^4.10.2",
+    "nodegit": "^0.1.4",
+    "request": "^2.47.0",
+    "rsvp": "^3.0.14",
+    "underscore": "^1.7.0",
+    "url-template": "^2.0.4"
+  },
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "chai-as-promised": "^4.1.1",
+    "mocha": "^2.0.1",
+    "sinon": "^1.11.1"
+  },
+  "scripts": {
+    "test": "mocha tests/*.js"
+  },
+  "author": "Thomas Parslow",
+  "license": "MIT"
+}
