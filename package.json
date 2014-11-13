@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "hubbub",
   "version": "0.1.0",
   "description": "Comments for Jekyll blogs as GitHub Pull Requests",
   "main": "server.js",
