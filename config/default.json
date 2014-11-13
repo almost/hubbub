@@ -6,7 +6,7 @@
   "sites": {
     "default": {
       "user": "almost",
-      "repo": "Sample-Jekyll-Site",
+      "repo": "hubbubtest",
       "branch": "gh-pages",
       "commentsEndMarker": "COMMENTS_END"
     }

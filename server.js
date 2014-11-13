@@ -81,7 +81,6 @@ app.post('/api/:site/comments', function (req, res) {
       res.json({html: marked(preprocessedComment)});
     })
     .catch(function (err) {
-      // console.log(err);
       console.error("Failed to save comment: " + (err.message || err.toString()));
       if (err.stacktrace) {
         console.error(err.stacktrace);

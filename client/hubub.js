@@ -37,6 +37,6 @@
     };
     
     // TOOD: Get post path from canonical meta tag if it's present
-    xmlhttp.send(JSON.stringify({metadata: {name: name}, comment: comment, post: window.location.path}));
+    xmlhttp.send(JSON.stringify({metadata: {name: name}, comment: comment, post: window.location.pathname}));
   });
 })();
