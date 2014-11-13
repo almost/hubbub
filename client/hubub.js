@@ -19,7 +19,7 @@
       if (xmlhttp.readyState === 4) {
         if (xmlhttp.status >= 200 && xmlhttp.status < 300) {
           var response = JSON.parse(xhr.responseText);
-          var commentsContainer = document.querySelector('form[data-comments]');         
+          var commentsContainer = document.querySelector('form[data-pendingcomment]');         
           if (commentsContainer) {
             var commentEl = document.createElement('div');
             commentEl.innerHTML = response.html;
