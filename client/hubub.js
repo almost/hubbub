@@ -19,7 +19,7 @@
       if (xmlhttp.readyState === 4) {
         if (xmlhttp.status >= 200 && xmlhttp.status < 300) {
           var response = JSON.parse(xmlhttp.responseText);
-          var commentsContainer = document.querySelector('[data-pendingcomment]');         
+          var commentsContainer = document.querySelector('[data-hubbub-pendingcomment]');         
           if (commentsContainer) {
             var commentEl = document.createElement('div');
             commentEl.innerHTML = response.html;
