@@ -23,7 +23,7 @@
           if (commentsContainer) {
             var commentEl = document.createElement('div');
             commentEl.innerHTML = response.html;
-            commentsContainer.addChild(commentEl);
+            commentsContainer.appendChild(commentEl);
           }
           alert("Comment sent!");
           form.querySelector('[name=comment]').value = "";
