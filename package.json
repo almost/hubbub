@@ -2,9 +2,11 @@
   "name": "hubbub",
   "version": "0.1.0",
   "description": "Comments for Jekyll blogs as GitHub Pull Requests",
+  "repository": "https://github.com/almost/hubbub",
   "main": "server.js",
   "dependencies": {
     "body-parser": "^1.9.2",
+    "config": "^1.7.0",
     "express": "^4.10.2",
     "nodegit": "^0.1.4",
     "request": "^2.47.0",

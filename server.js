@@ -1,17 +1,21 @@
   var express = require('express'),
     bodyParser = require('body-parser'),
     _ = require('underscore'),
+    config = require('config'),
     GithubClient = require('./lib/github-client'),
     Commenter = require('./lib/commenter'),
     makeCommentInserter = require('./lib/comment-inserter'),
+
     app = express(),
     port = process.env.PORT || 44444;
 
 app.use(bodyParser.json());
 
-var options = require('./config.json');
-var commentTemplate = _.template(options.commentTemplate);
 
+var commentTemplate = _.template(config.get('commentTemplate'));
+var sites = config.get('sites');
+
+// Convert a post url path to a source file path within git
 function urlPathToSourceFile(urlPath) {
   var match = (/\/[^\/]+\/(.*)\//).exec(urlPath);
   if (match) {
@@ -22,8 +26,8 @@ function urlPathToSourceFile(urlPath) {
 }
 
 app.param('site', function (req, res, next, siteId) {
-  if (_.has(options.sites, siteId)) {
-    req.site = options.sites[siteId];
+  if (_.has(sites, siteId)) {
+    req.site = sites[siteId];
     next();
   } else {
     next(new Error("Site not found"));
@@ -32,7 +36,7 @@ app.param('site', function (req, res, next, siteId) {
 
 // Post a new comment
 app.post('/api/:site/comments', function (req, res) {
-  var github = new GithubClient(options.commentUser.user, options.commentUser.auth);
+  var github = new GithubClient(config.get('commentUser.user'), config.get('commentUser.auth'));
   var commentInserter = makeCommentInserter(req.site.commentsEndMarker);
   var commenter = new Commenter(github, req.site, commentInserter);
   

@@ -1,0 +1,6 @@
+{
+  "commentUser" :{
+    "auth": {"user": "COMMENT_USER", "pass": "COMMENT_PASSWORD"},
+    "user": "COMMENT_USER"
+  }
+}
