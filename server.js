@@ -19,6 +19,26 @@ app.use(cors());
 
 var commentTemplate = _.template(config.get('commentTemplate'));
 var sites = config.get('sites');
+var github = new GithubClient(config.get('commentUser.user'), config.get('commentUser.auth'));
+
+function ensureForksExist() {
+  _.each(sites, function (site) {
+    console.log('Check that Comment user has a fork of ' + site.repo);
+    github.getRepo(config.get('commentUser.user'), site.repo)
+      .catch(function (errorResponse) {
+        if (errorResponse.statusCode === 404) {
+          console.log('Comment user does not have a fork for ' + site.repo + '. Creating one now');
+          github.createFork(site.user, site.repo)
+            .then(function () {
+              console.log('Forking of ' + site.repo + ' in progress (it could be a few minutes before it is ready');
+            });
+        } else {
+          console.log('Unexpected error while checking if comment user has a fork of ' + site.repo + '(status code ' + errorResponse.statusCode + ')');
+        }
+      });
+  });
+}
+
 
 // Convert a post url path to a source file path within git
 function urlPathToSourceFile(urlPath) {
@@ -47,7 +67,6 @@ app.param('site', function (req, res, next, siteId) {
 
 // Post a new comment
 app.post('/api/:site/comments', function (req, res) {
-  var github = new GithubClient(config.get('commentUser.user'), config.get('commentUser.auth'));
   var commentInserter = makeCommentInserter(req.site.commentsEndMarker);
   var commenter = new Commenter(github, req.site, commentInserter);
   
@@ -76,8 +95,6 @@ app.post('/api/:site/comments', function (req, res) {
 
   commenter.createComment(sourcePath, metadata, preprocessedComment)
     .then(function (sentDetails) {
-      console.log(sentDetails);
-      
       // IDEA: In the future when we support message editing the id
       // should contain an hmac with the secret key. That way the id
       // will be unguessable and we can assume that someone who has
@@ -106,8 +123,7 @@ app.get('/api/:site/comments', function (req, res) {
 // deleting
 app.get('/api/:site/comments/:id', function (req, res) {
   var id = req.params.id;
-  var github = new GithubClient(config.get('commentUser.user'), config.get('commentUser.auth'));
-
+  
   github.getPullRequest(req.site.user, req.site.repo, id)
     .then(function (pullRequest) {
       var state;
@@ -132,6 +148,10 @@ var helpPage = _.template(fs.readFileSync(path.resolve(__dirname, "./pages/help.
 app.get('/help', function (req, res) {
   res.end(marked(helpPage({domain: req.get('host')})));
 });
+
+
+// Check forks on every startup (happend asynchronously)
+ensureForksExist();
 
 app.listen(port, function () {
   console.log('Listening on port ' + port);
