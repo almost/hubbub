@@ -160,4 +160,27 @@ describe('GithubClient', function () {
       expect(result.state).to.equal('resolved');
     });
   });
+  
+  describe('getPullRequest', function () {
+    var result;
+    beforeEach(function () {
+      result = github.getPullRequest("sourceBob", "my-repo", "99");
+    });
+
+    it('should get from the pull resource', function () {
+      expect(requests[0].options.method).to.equal("GET");
+      expect(requests[0].options.url).to.equal("https://api.github.com/repos/sourceBob/my-repo/pulls/99");
+    });
+    
+    it('should return data if the response is a 200', function () {
+      requests[0].response.resolve({statusCode: 200, body: {number: 99}});
+      expect(result.value).to.eql({number: 99});
+    });
+    
+    it('should raise an error if the response is not 200', function () {
+      requests[0].response.resolve({statusCode: 201, body: {number: 99}});
+      expect(result.state).to.equal('rejected');
+    });
+
+  });
 });

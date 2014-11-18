@@ -73,8 +73,16 @@ app.post('/api/:site/comments', function (req, res) {
   var preprocessedComment = commentTemplate({comment: comment, metadata: metadata});
 
   commenter.createComment(sourcePath, metadata, preprocessedComment)
-    .then(function () {
-      res.json({html: marked(preprocessedComment)});
+    .then(function (sentDetails) {
+      
+      // IDEA: In the future when we support message editing the id
+      // should contain an hmac with the secret key. That way the id
+      // will be unguessable and we can assume that someone who has
+      // the id is the message author.
+      res.json({
+        html: marked(preprocessedComment),
+        update_id: sentDetails.pullRequestNumber
+      });
     })
     .catch(function (err) {
       console.error("Failed to save comment: " + (err.message || err.toString()));
@@ -87,9 +95,35 @@ app.post('/api/:site/comments', function (req, res) {
     });
 });
 
-
 app.get('/api/:site/comments', function (req, res) {
   res.redirect("/help");
+});
+
+// Comment status, will later also support comment editing and
+// deleting
+app.get('/api/:site/comments/:id', function (req, res) {
+  var id = req.params.id;
+  var github = new GithubClient(config.get('commentUser.user'), config.get('commentUser.auth'));
+
+  github.getPullRequest(req.site.user, req.site.repo, id)
+    .then(function (pullRequest) {
+      console.log(pullRequest);
+      var state;
+      if (pullRequest.status === 'open') {
+        state = "pending";
+      } else {
+        state = (pullRequest.merged) ? 'accepted' : 'rejected';
+      }
+
+      res.json({state: state});
+    })
+    .catch(function (error) {
+      if (error.statusCode === 404) {
+        res.status(404).json({error: "Not found"});
+      } else {
+        res.status(500).json({error: "Failed to retrieve Pull Request details"});
+      }
+    });
 });
 
 app.listen(port, function () {
