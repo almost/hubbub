@@ -1,7 +1,7 @@
 Hubbub
 ======
 
-Comments as GitHub pull requests for Jekyll (and other static site generator) websites.
+Comments as Github pull requests for Jekyll (and other static site generator) websites.
 
 Thanks to Miles Sabin ([twitter](https://twitter.com/milessabin) & [github](https://github.com/milessabin)) for the original idea and initial sponsorship. 
 
@@ -37,3 +37,8 @@ PORT=8080 NODE_ENV=local node server.js
 
 Once you've got the server running go to `http://127.0.0.1:8080/help`
 to see instructions for integrating Hubbub into your blog.
+
+Contributing
+------------
+
+Pull Requests are very welcome. Check out the Github issues for a list of things that need doing (and please feel free to add your own).
