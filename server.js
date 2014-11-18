@@ -1,4 +1,6 @@
-  var express = require('express'),
+var express = require('express'),
+    fs = require('fs'),
+    path = require('path'),
     bodyParser = require('body-parser'),
     marked = require('marked'),
     cors = require('cors'),
@@ -124,6 +126,11 @@ app.get('/api/:site/comments/:id', function (req, res) {
         res.status(500).json({error: "Failed to retrieve Pull Request details"});
       }
     });
+});
+
+var helpPage = _.template(fs.readFileSync(path.resolve(__dirname, "./pages/help.md"), {encoding: "utf8"}));
+app.get('/help', function (req, res) {
+  res.end(marked(helpPage({domain: req.get('host')})));
 });
 
 app.listen(port, function () {
