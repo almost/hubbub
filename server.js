@@ -87,6 +87,11 @@ app.post('/api/:site/comments', function (req, res) {
     });
 });
 
+
+app.get('/api/:site/comments', function (req, res) {
+  res.redirect("/help");
+});
+
 app.listen(port, function () {
   console.log('Listening on port ' + port);
 });
