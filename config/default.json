@@ -1,13 +1,13 @@
 {
   "commentUser" :{
-    "auth": {"user": "hubbubcomments", "pass": "XXXXX"},
-    "user": "hubbubcomments"
+    "auth": {"user": "COMMENT_USER", "pass": "COMMENT_PASSWORD"},
+    "user": "COMMENT_USER"
   },
   "sites": {
     "default": {
-      "user": "almost",
-      "repo": "hubbubtest",
-      "branch": "gh-pages",
+      "user": "SITE_USER",
+      "repo": "SITE_REPO",
+      "branch": "SITE_BRANCH",
       "commentsEndMarker": "COMMENTS_END"
     }
   },

@@ -2,5 +2,12 @@
   "commentUser" :{
     "auth": {"user": "COMMENT_USER", "pass": "COMMENT_PASSWORD"},
     "user": "COMMENT_USER"
-  }
+  },
+  "sites": {
+    "default": {
+      "user": "SITE_USER",
+      "repo": "SITE_REPO",
+      "branch": "SITE_BRANCH"
+    }
+  },
 }
