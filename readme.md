@@ -36,7 +36,7 @@ PORT=8080 NODE_ENV=local node server.js
 ```
 
 Once you've got the server running go to `http://127.0.0.1:8080/help`
-to see instructions for integrating Hubbub into your blog.
+to see instructions for integrating Hubbub into your blog (or read the instructions [through Github](https://github.com/almost/hubbub/blob/master/pages/help.md))
 
 Contributing
 ------------
