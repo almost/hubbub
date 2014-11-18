@@ -74,6 +74,7 @@ app.post('/api/:site/comments', function (req, res) {
 
   commenter.createComment(sourcePath, metadata, preprocessedComment)
     .then(function (sentDetails) {
+      console.log(sentDetails);
       
       // IDEA: In the future when we support message editing the id
       // should contain an hmac with the secret key. That way the id
@@ -81,7 +82,7 @@ app.post('/api/:site/comments', function (req, res) {
       // the id is the message author.
       res.json({
         html: marked(preprocessedComment),
-        update_id: sentDetails.pullRequestNumber
+        update_url: req.protocol + '://' + req.get('host') + '/api/' + req.params.site + '/comments/' + sentDetails.pullRequestNumber
       });
     })
     .catch(function (err) {
@@ -107,7 +108,6 @@ app.get('/api/:site/comments/:id', function (req, res) {
 
   github.getPullRequest(req.site.user, req.site.repo, id)
     .then(function (pullRequest) {
-      console.log(pullRequest);
       var state;
       if (pullRequest.status === 'open') {
         state = "pending";
