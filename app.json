@@ -15,7 +15,7 @@
     "SECRET": {
         "description": "Secret used to verify comment edits.",
         "generator": "secret"
-    }
+    },
     "COMMENT_USER": {
       "description": "Username for the Github user who will create the comment Pull Request. It is recommended that you create an account especially for this purpose.",
       "required": true
@@ -29,11 +29,11 @@
       "required": true
     },
     "SITE_REPO": {
-      "description": "Name of the Github repository containing the site (just the name, don't include the Github username)"
+      "description": "Name of the Github repository containing the site (just the name, don't include the Github username)",
       "required": true
     },
     "SITE_BRANCH": {
-      "description": "Branch of the Github repository that has the files for the site."
+      "description": "Branch of the Github repository that has the files for the site.",
       "required": true
     },
     "COMMENT_TEMPLATE": {
