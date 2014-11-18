@@ -7,6 +7,7 @@
   "use strict";
 
   var defaults = {
+    // For what post are we commenting?
     post: window.location.pathname
   };
 
@@ -18,7 +19,6 @@
         post = options.post || defaults.post;
     
     var xmlhttp = new XMLHttpRequest();
-    // TODO: Make this configurable!
     xmlhttp.open("POST", endpoint, true);
     xmlhttp.setRequestHeader("Content-type", "application/json");
 
@@ -53,17 +53,99 @@
     
     sendComment({endpoint: form.action, comment: form.comment.value, metadata: metadata}, success, failure);
   }
+
+  // Add a comment to the pending storage.
+  // commentResponse is the response data returned from posting a comment.
+  function storePendingComment(post, commentResponse) {
+    post = post || defaults.post;
+    var pendingComments = JSON.parse(localStorage["hubbubPendingComments:" + post] || '[]');
+    pendingComments.push(commentResponse);
+    localStorage["hubbubPendingComments:" + post] = JSON.stringify(pendingComments);
+  }
+  
+  function clearPendingComments(post) {
+    post = post || defaults.post;
+    delete localStorage["hubbubPendingComments:" + post];
+  }
+    
+
+  // Get pending comments from local storage then check them to make
+  // sure they're still pending
+  function getPendingComments(post, callback) {
+    post = post || defaults.post;
+    var pendingComments = JSON.parse(localStorage["hubbubPendingComments:" + post] || '[]');
+    var remaining = pendingComments.length;
+    var stillPending = [];
+
+    function gotCommentStatus (pendingComment, isStillPending) {
+      if (isStillPending) {
+        stillPending.push(pendingComment)
+      }
+      remaining--;
+      if (remaining === 0) {
+        // Store back just the pending comments
+        if (stillPending.length === 0) {
+          delete localStorage["hubbubPendingComments:" + post];
+        } else {
+          localStorage["hubbubPendingComments:" + post] = JSON.stringify(stillPending);
+        }
+        
+        callback(stillPending);
+      }
+    }
+    
+    pendingComments.forEach(function (pendingComment) {
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.open("GET", pendingComment.update_url, true);
+
+      xmlhttp.onload = function (e) {
+        if (xmlhttp.readyState === 4) {
+          if (xmlhttp.status === 200) {
+            var response = JSON.parse(xmlhttp.responseText);
+            gotCommentStatus(pendingComment, response.state === "pending");
+          } else if (xmlhttp.status === 404) {
+            gotCommentStatus(pendingComment, false);
+          } else {
+            // Got an unexpected status, let's just assume the comment
+            // is still pending for now
+            gotCommentStatus(pendingComment, true);
+          }
+        }
+      };
+      
+      xmlhttp.onerror = function (e) {
+        // Got an unexpected error, let's just assume the comment
+        // is still pending for now
+        gotCommentStatus(pendingComment, true);
+      };
+      
+      xmlhttp.send();
+    });
+  }
+
+  function addPendingCommentToDOM(container, html) {
+    var commentEl = document.createElement('div');
+    commentEl.className = "hubbub-pending hubbub-added";
+    commentEl.innerHTML = html;
+    container.appendChild(commentEl);
+    
+    // Remove the hubbub-added class to allow CSS transitions to
+    // work
+    setTimeout(function () {
+      commentEl.className = "hubbub-pending";
+    }, 100);
+  }
   
   // Trap all submit events and check for a data-hubbub attribute, if
   // one exists then send a comment from the form.
   var inProgress = false;
   function onSubmit (evt) {
     var form = evt.target;
-    if (!form.getAttribute('data-hubbub')) {
+    if (!form.hasAttribute('data-hubbub')) {
       // These aren't the forms you're looking for
       return;
     }
-    var previewContainer = document.querySelector(evt.target.getAttribute('data-hubbub'));
+    var previewContainer = document.querySelector('[data-hubbub-pendingcomments]');
     evt.preventDefault();
     
     if (!form.comment) {
@@ -88,22 +170,17 @@
       })
     }
 
-    function success(response) {
+    function success(commentResponse) {
       inProgress = false;
       removeClass();
       // Clear the comment field
       form.comment.value = '';
       if (previewContainer) {
-        var commentEl = document.createElement('div');
-        commentEl.className = "hubbub-pending hubbub-added";
-        commentEl.innerHTML = response.html;
-        previewContainer.appendChild(commentEl);
-        
-        // Remove the hubbub-added class to allow CSS transitions to
-        // work
-        setTimeout(function () {
-          commentEl.className = "hubbub-pending";
-        }, 100);
+        // Store the comment away so we can keep on displaying it
+        // while it is pending
+        storePendingComment(null, commentResponse);
+
+        addPendingCommentToDOM(previewContainer, commentResponse.html);
       }
     }
     
@@ -113,12 +190,30 @@
       alert("Failed to send comment.");
     }
   }
-
   document.addEventListener('submit', onSubmit);
+
+  
+  // If a pending comments container is present then fill it with any pending comments we've stored
+  function onDocumentReady() {
+    var previewContainer = document.querySelector('[data-hubbub-pendingcomments]');
+    if (previewContainer) {
+      getPendingComments(null, gotPendingComments);
+    }
+    function gotPendingComments(pendingComments) {
+      pendingComments.forEach(function (pendingComment) {
+        addPendingCommentToDOM(previewContainer, pendingComment.html);
+      });
+    }
+  }
+  document.addEventListener('DOMContentLoaded', onDocumentReady);
   
 
   hubbub.defaults = defaults;
   hubbub.sendComment = sendComment;
   hubbub.sendForm = sendForm;
+
+  hubbub.storePendingComment = storePendingComment;
+  hubbub.getPendingComments = getPendingComments;
+  hubbub.clearPendingComments = clearPendingComments;
   
 })(window.hubbub = {});

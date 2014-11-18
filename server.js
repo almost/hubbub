@@ -109,7 +109,7 @@ app.get('/api/:site/comments/:id', function (req, res) {
   github.getPullRequest(req.site.user, req.site.repo, id)
     .then(function (pullRequest) {
       var state;
-      if (pullRequest.status === 'open') {
+      if (pullRequest.state === 'open') {
         state = "pending";
       } else {
         state = (pullRequest.merged) ? 'accepted' : 'rejected';
