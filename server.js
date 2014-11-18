@@ -23,6 +23,10 @@ var github = new GithubClient(config.get('commentUser.user'), config.get('commen
 
 function ensureForksExist() {
   _.each(sites, function (site) {
+    if (site.user === config.get('commentUser.user')) {
+      // No fork needed for sites owned by the comment user
+      return;
+    }
     console.log('Check that Comment user has a fork of ' + site.repo);
     github.getRepo(config.get('commentUser.user'), site.repo)
       .catch(function (errorResponse) {
