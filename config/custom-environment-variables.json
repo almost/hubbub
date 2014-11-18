@@ -10,4 +10,5 @@
       "branch": "SITE_BRANCH"
     }
   },
+  "commentTemplate": "COMMENT_TEMPLATE"
 }
