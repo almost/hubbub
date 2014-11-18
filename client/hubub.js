@@ -56,6 +56,7 @@
   
   // Trap all submit events and check for a data-hubbub attribute, if
   // one exists then send a comment from the form.
+  var inProgress = false;
   function onSubmit (evt) {
     var form = evt.target;
     if (!form.getAttribute('data-hubbub')) {
@@ -70,6 +71,12 @@
       return;
     }
 
+    if (inProgress) {
+      return;
+    }
+
+    inProgress = true;
+
     // Add status class while we send
     form.className = form.className + " hubbub-sending";
     
@@ -82,6 +89,7 @@
     }
 
     function success(response) {
+      inProgress = false;
       removeClass();
       // Clear the comment field
       form.comment.value = '';
@@ -100,6 +108,7 @@
     }
     
     function failure(xmlhttp) {
+      inProgress = false;
       removeClass();
       alert("Failed to send comment.");
     }
