@@ -16,7 +16,7 @@ You can deploy (for free) to Heroku with the button below:
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/almost/hubbub)
 
-It will ask you for a Github username *and* a password. This is for the commentor user which will be the user which actually creates the pull requests for comments. I strongly suggest you create a new user for and use it only for this.
+It will ask you for a Github username *and* a password. This is for the commenter user which will be the user which actually creates the pull requests for comments. I strongly suggest you create a new user for and use it only for this.
 
 Manual Deployment
 -----------------
@@ -35,5 +35,5 @@ Once you've created the configuration file you can run the server with this comm
 PORT=8080 NODE_ENV=local node server.js
 ```
 
-Once you've got the server running goto `http://127.0.0.1:8080/help`
-to see instructions for integration Hubbub into your blog.
+Once you've got the server running go to `http://127.0.0.1:8080/help`
+to see instructions for integrating Hubbub into your blog.
