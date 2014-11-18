@@ -1,0 +1,44 @@
+{
+  "name": "Hubub",
+  "description": "Comments for Jekyll blogs as GitHub Pull Requests",
+  "keywords": [
+    "git",
+    "github",
+    "jekyll",
+    "comments",
+    "blog"
+  ],
+  "website": "https://github.com/almost/hubbub",
+  "repository": "https://github.com/almost/hubbub",
+  "success_url": "/help",
+  "env": {
+    "SECRET": {
+        "description": "Secret used to verify comment edits.",
+        "generator": "secret"
+    }
+    "COMMENT_USER": {
+      "description": "Username for the Github user who will create the comment Pull Request. It is recommended that you create an account especially for this purpose.",
+      "required": true
+    },
+    "COMMENT_PASSWORD": {
+      "description": "Password for the Github user who will create the comment Pull Request.",
+      "required": true
+    },
+    "SITE_USER": {
+      "description": "Username for the Github user who owns the repository containing the site",
+      "required": true
+    },
+    "SITE_REPO": {
+      "description": "Name of the Github repository containing the site (just the name, don't include the Github username)"
+      "required": true
+    },
+    "SITE_BRANCH": {
+      "description": "Branch of the Github repository that has the files for the site."
+      "required": true
+    },
+    "COMMENT_TEMPLATE": {
+      "description": "A template to apply to the comment before it is inserted into the site. Should probably produce markdown, or whatever format the site uses for its files. Uses Underscore.JS templates.",
+      "value": "Comment by <%- metadata.name %>\n--------\n<%= comment %>\n"
+    }
+  }
+}
