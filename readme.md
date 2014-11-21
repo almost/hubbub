@@ -7,7 +7,7 @@ Thanks to Miles Sabin ([twitter](https://twitter.com/milessabin) & [github](http
 
 Initial development by [Thomas Parslow](http://almostobsolete.net). Pull requests very welcome.
 
-[![Build Status](https://travis-ci.org/almost/hubbub.svg)](https://travis-ci.org/almost/hubbub)
+[![Build Status](https://travis-ci.org/almost/hubbub.svg)](https://travis-ci.org/almost/hubbub) [![Stories in Ready](https://badge.waffle.io/almost/hubbub.png?label=ready&title=Ready)](https://waffle.io/almost/hubbub)
 
 Quick Deployment
 ----------------
