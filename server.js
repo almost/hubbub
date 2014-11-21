@@ -109,7 +109,7 @@ app.post('/api/:site/comments', function (req, res) {
       });
     })
     .catch(function (err) {
-      console.error("Failed to save comment: " + (err.message || err.toString()));
+      console.error("Failed to save comment: " + (err.message || JSON.stringify(err)));
       if (err.stacktrace) {
         console.error(err.stacktrace);
       }
