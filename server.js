@@ -109,12 +109,19 @@ app.post('/api/:site/comments', function (req, res) {
       });
     })
     .catch(function (err) {
-      console.error("Failed to save comment: " + (err.message || JSON.stringify(err)));
+      var errorMessage;
+      if (err.statusCode) {
+        errorMessage = "Received " + err.statusCode + " status code from github API";
+      } else {
+        errorMessage = (err.message) ? err.message : "unknown error";
+      }
+      errorMessage = "Failed to save comment: " + errorMessage;
+      console.error(errorMessage);
       if (err.stacktrace) {
         console.error(err.stacktrace);
       }
       // TODO: Detect errors like missing source files and report them
-      res.status(500).json({error: "Failed to save comment"});
+      res.status(500).json({error: errorMessage});
       return;
     });
 });
