@@ -108,7 +108,7 @@ describe('GithubClient', function () {
 
     it('should request current file data', function () {
       expect(requests[0].options.method).to.equal("GET");
-      expect(requests[0].options.url).to.equal("https://api.github.com/repos/bob/the-repo/contents/path/to/the/file.ext");
+      expect(requests[0].options.url).to.equal("https://api.github.com/repos/bob/the-repo/contents/path/to/the/file.ext?ref=a-branch");
     });
 
     it('should base64 decode the content and pass it to the edit function', function () {
@@ -119,7 +119,7 @@ describe('GithubClient', function () {
     it('should put back the newly edited content', function () {
       requests[0].response.resolve({body: {content: "SGVsbG8gd29ybGQ=", sha: 'the sha'}});
       expect(requests[1].options.method).to.equal('PUT');
-      expect(requests[1].options.url).to.equal(requests[0].options.url);
+      expect(requests[1].options.url + "?ref=a-branch").to.equal(requests[0].options.url);
       expect(requests[1].options.body.path).to.equal('path/to/the/file.ext');
       expect(requests[1].options.body.sha).to.equal('the sha');
       expect(requests[1].options.body.content.toString()).to.equal(new Buffer('EDITED CONTENT').toString('base64'));
