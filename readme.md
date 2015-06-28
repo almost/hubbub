@@ -7,7 +7,7 @@ Thanks to Miles Sabin ([twitter](https://twitter.com/milessabin) & [github](http
 
 Initial development by [Thomas Parslow](http://almostobsolete.net). Pull requests very welcome.
 
-[![Build Status](https://travis-ci.org/almost/hubbub.svg)](https://travis-ci.org/almost/hubbub)
+[![Build Status](https://travis-ci.org/almost/hubbub.svg)](https://travis-ci.org/almost/hubbub) 
 
 Quick Deployment
 ----------------
@@ -16,7 +16,7 @@ You can deploy (for free) to Heroku with the button below:
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/almost/hubbub)
 
-It will ask you for a Github username *and* a password. This is for the commenter user which will be the user which actually creates the pull requests for comments. I strongly suggest you create a new user for and use it only for this.
+It will ask you for a Github username *and* a password. This is for the commenter user which will be the user which actually creates the pull requests for comments. I strongly suggest you create a new user just for this.
 
 Manual Deployment
 -----------------
@@ -42,3 +42,5 @@ Contributing
 ------------
 
 Pull Requests are very welcome. Check out the Github issues for a list of things that need doing (and please feel free to add your own).
+
+We use Waffle.io to view Github issues, you can too if you want: [![Stories in Ready](https://badge.waffle.io/almost/hubbub.png?label=ready&title=Ready)](https://waffle.io/almost/hubbub)
