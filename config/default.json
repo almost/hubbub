@@ -11,5 +11,5 @@
       "commentsEndMarker": "COMMENTS_END"
     }
   },
-  "commentTemplate": "Comment by <%- metadata.name %>\n--------\n<%= comment %>\n"
+  "commentTemplate": "Comment by <%- metadata.name %>\n--------\n<%- comment %>\n"
 }
