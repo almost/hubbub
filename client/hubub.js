@@ -17,7 +17,7 @@
         comment = options.comment || defaults.comment,
         metadata = options.metadata || defaults.metadata,
         post = options.post || defaults.post;
-    
+
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("POST", endpoint, true);
     xmlhttp.setRequestHeader("Content-type", "application/json");
@@ -32,25 +32,25 @@
         }
       }
     };
-    
+
     xmlhttp.onerror = function (e) {
       failure(xmlhttp, e);
     };
-    
+
     xmlhttp.send(JSON.stringify({metadata: metadata, comment: comment, post: post}));
   }
-  
+
   // Send a comment given in the fields of a form in the DOM
   function sendForm(form, success, failure) {
     var metadata = {}, match;
-    
+
     for (var i = 0; i < form.length; i++) {
       match = /^metadata_(.*)/.exec(form[i].name);
       if (match) {
         metadata[match[1]] = form[i].value;
       }
     }
-    
+
     sendComment({endpoint: form.action, comment: form.comment.value, metadata: metadata}, success, failure);
   }
 
@@ -62,12 +62,12 @@
     pendingComments.push(commentResponse);
     localStorage["hubbubPendingComments:" + post] = JSON.stringify(pendingComments);
   }
-  
+
   function clearPendingComments(post) {
     post = post || defaults.post;
     delete localStorage["hubbubPendingComments:" + post];
   }
-    
+
 
   // Get pending comments from local storage then check them to make
   // sure they're still pending
@@ -89,11 +89,11 @@
         } else {
           localStorage["hubbubPendingComments:" + post] = JSON.stringify(stillPending);
         }
-        
+
         callback(stillPending);
       }
     }
-    
+
     pendingComments.forEach(function (pendingComment) {
       var xmlhttp = new XMLHttpRequest();
       xmlhttp.open("GET", pendingComment.update_url, true);
@@ -112,13 +112,13 @@
           }
         }
       };
-      
+
       xmlhttp.onerror = function (e) {
         // Got an unexpected error, let's just assume the comment
         // is still pending for now
         gotCommentStatus(pendingComment, true);
       };
-      
+
       xmlhttp.send();
     });
   }
@@ -128,14 +128,14 @@
     commentEl.className = "hubbub-pending hubbub-added";
     commentEl.innerHTML = html;
     container.appendChild(commentEl);
-    
+
     // Remove the hubbub-added class to allow CSS transitions to
     // work
     setTimeout(function () {
       commentEl.className = "hubbub-pending";
     }, 100);
   }
-  
+
   // Trap all submit events and check for a data-hubbub attribute, if
   // one exists then send a comment from the form.
   var inProgress = false;
@@ -147,7 +147,7 @@
     }
     var previewContainer = document.querySelector('[data-hubbub-pendingcomments]');
     evt.preventDefault();
-    
+
     if (!form.comment) {
       // If there's no comment then just ignore the submit
       return;
@@ -161,7 +161,7 @@
 
     // Add status class while we send
     form.className = form.className + " hubbub-sending";
-    
+
     sendForm(form, success, failure);
 
     function removeClass() {
@@ -183,7 +183,7 @@
         addPendingCommentToDOM(previewContainer, commentResponse.html);
       }
     }
-    
+
     function failure(xmlhttp) {
       inProgress = false;
       removeClass();
@@ -192,7 +192,7 @@
   }
   document.addEventListener('submit', onSubmit);
 
-  
+
   // If a pending comments container is present then fill it with any pending comments we've stored
   function onDocumentReady() {
     var previewContainer = document.querySelector('[data-hubbub-pendingcomments]');
@@ -206,7 +206,7 @@
     }
   }
   document.addEventListener('DOMContentLoaded', onDocumentReady);
-  
+
 
   hubbub.defaults = defaults;
   hubbub.sendComment = sendComment;
@@ -215,5 +215,5 @@
   hubbub.storePendingComment = storePendingComment;
   hubbub.getPendingComments = getPendingComments;
   hubbub.clearPendingComments = clearPendingComments;
-  
+
 })(window.hubbub = {});

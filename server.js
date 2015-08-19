@@ -13,6 +13,10 @@ var express = require('express'),
     app = express(),
     port = process.env.PORT || 44444;
 
+marked.setOptions({
+  smartypants: true
+});
+
 app.use(bodyParser.json());
 
 app.use(cors());
@@ -73,11 +77,11 @@ app.param('site', function (req, res, next, siteId) {
 app.post('/api/:site/comments', function (req, res) {
   var commentInserter = makeCommentInserter(req.site.commentsEndMarker);
   var commenter = new Commenter(github, req.site, commentInserter);
-  
+
   var postPath = req.body.post;
   var comment = req.body.comment;
   var metadata = req.body.metadata;
-  
+
   if (!_.isString(comment)) {
     res.status(400).json({error: "Comment is required"});
     return;
@@ -93,9 +97,9 @@ app.post('/api/:site/comments', function (req, res) {
     return;
   }
 
-  
+
   var sourcePath = urlPathToSourceFile(postPath);
-  var preprocessedComment = commentTemplate({comment: comment, metadata: metadata});
+  var preprocessedComment = commentTemplate({comment: comment, metadata: metadata, date: new Date()});
 
   commenter.createComment(sourcePath, metadata, preprocessedComment)
     .then(function (sentDetails) {
@@ -134,7 +138,7 @@ app.get('/api/:site/comments', function (req, res) {
 // deleting
 app.get('/api/:site/comments/:id', function (req, res) {
   var id = req.params.id;
-  
+
   github.getPullRequest(req.site.user, req.site.repo, id)
     .then(function (pullRequest) {
       var state;
