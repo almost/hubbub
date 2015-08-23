@@ -15,7 +15,8 @@ var express = require('express'),
     port = process.env.PORT || 44444;
 
 marked.setOptions({
-  smartypants: true
+  smartypants: true,
+  breaks: true
 });
 
 app.use(bodyParser.json());
