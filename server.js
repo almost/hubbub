@@ -49,9 +49,8 @@ function ensureForksExist() {
 
 
 // Convert a post url path to a source file path within git
-function urlPathToSourceFile(urlPath) {
-  // TODO: Make this configurable!
-  return "_posts/" + urlPath.split('/').slice(-5, -1).join('-') + ".markdown";
+function urlPathToSourceFile(urlPath, prefix, suffix) {
+  return prefix + "_posts/" + urlPath.split('/').slice(-5, -1).join('-') + "." + suffix;
 }
 
 app.get('/hubbub.js', function (req, res) {
@@ -98,7 +97,7 @@ app.post('/api/:site/comments', function (req, res) {
   }
 
 
-  var sourcePath = urlPathToSourceFile(postPath);
+  var sourcePath = urlPathToSourceFile(postPath, req.site.prefix, req.site.suffix);
   var preprocessedComment = commentTemplate({comment: comment, metadata: metadata, date: new Date()});
 
   commenter.createComment(sourcePath, metadata, preprocessedComment)
