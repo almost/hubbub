@@ -3,6 +3,7 @@ var express = require('express'),
     path = require('path'),
     bodyParser = require('body-parser'),
     marked = require('marked'),
+    moment = require('moment-timezone'),
     cors = require('cors'),
     _ = require('underscore'),
     config = require('config'),
@@ -98,7 +99,7 @@ app.post('/api/:site/comments', function (req, res) {
 
 
   var sourcePath = urlPathToSourceFile(postPath, req.site.prefix, req.site.suffix);
-  var preprocessedComment = commentTemplate({comment: comment, metadata: metadata, date: new Date()});
+  var preprocessedComment = commentTemplate({comment: comment, metadata: metadata, moment: moment()});
 
   commenter.createComment(sourcePath, metadata, preprocessedComment)
     .then(function (sentDetails) {
