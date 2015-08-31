@@ -36,6 +36,14 @@
       "description": "Branch of the Github repository that has the files for the site.",
       "required": true
     },
+    "URL_PREFIX": {
+      "description": "Path prefix for posts in the Github repository containing the site.",
+      "required": true
+    },
+    "URL_SUFFIX": {
+      "description": "Path suffix for posts in the Github repository containing the site.",
+      "required": true
+    },
     "COMMENT_TEMPLATE": {
       "description": "A template to apply to the comment before it is inserted into the site. Should probably produce markdown, or whatever format the site uses for its files. Uses Underscore.JS templates.",
       "value": "Comment by <%- metadata.name %>\n--------\n<%= comment %>\n"

@@ -3,6 +3,7 @@ var express = require('express'),
     path = require('path'),
     bodyParser = require('body-parser'),
     marked = require('marked'),
+    moment = require('moment-timezone'),
     cors = require('cors'),
     _ = require('underscore'),
     config = require('config'),
@@ -14,7 +15,8 @@ var express = require('express'),
     port = process.env.PORT || 44444;
 
 marked.setOptions({
-  smartypants: true
+  smartypants: true,
+  breaks: true
 });
 
 app.use(bodyParser.json());
@@ -49,9 +51,8 @@ function ensureForksExist() {
 
 
 // Convert a post url path to a source file path within git
-function urlPathToSourceFile(urlPath) {
-  // TODO: Make this configurable!
-  return "_posts/" + urlPath.split('/').slice(-5, -1).join('-') + ".markdown";
+function urlPathToSourceFile(urlPath, prefix, suffix) {
+  return prefix + "_posts/" + urlPath.split('/').slice(-5, -1).join('-') + "." + suffix;
 }
 
 app.get('/hubbub.js', function (req, res) {
@@ -98,8 +99,8 @@ app.post('/api/:site/comments', function (req, res) {
   }
 
 
-  var sourcePath = urlPathToSourceFile(postPath);
-  var preprocessedComment = commentTemplate({comment: comment, metadata: metadata, date: new Date()});
+  var sourcePath = urlPathToSourceFile(postPath, req.site.prefix, req.site.suffix);
+  var preprocessedComment = commentTemplate({comment: comment, metadata: metadata, moment: moment()});
 
   commenter.createComment(sourcePath, metadata, preprocessedComment)
     .then(function (sentDetails) {
