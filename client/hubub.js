@@ -123,7 +123,8 @@
     });
   }
 
-  function addPendingCommentToDOM(container, html) {
+  function addPendingCommentToDOM(container, comment) {
+    var html = comment.html;
     var commentEl = document.createElement('div');
     commentEl.className = "hubbub-pending hubbub-added";
     commentEl.innerHTML = html;
@@ -180,7 +181,7 @@
         // while it is pending
         storePendingComment(null, commentResponse);
 
-        addPendingCommentToDOM(previewContainer, commentResponse.html);
+        addPendingCommentToDOM(previewContainer, commentResponse);
       }
     }
 
@@ -201,7 +202,7 @@
     }
     function gotPendingComments(pendingComments) {
       pendingComments.forEach(function (pendingComment) {
-        addPendingCommentToDOM(previewContainer, pendingComment.html);
+        addPendingCommentToDOM(previewContainer, pendingComment);
       });
     }
   }
@@ -211,6 +212,7 @@
   hubbub.defaults = defaults;
   hubbub.sendComment = sendComment;
   hubbub.sendForm = sendForm;
+  hubbub.addPendingCommentToDOM = addPendingCommentToDOM;
 
   hubbub.storePendingComment = storePendingComment;
   hubbub.getPendingComments = getPendingComments;
