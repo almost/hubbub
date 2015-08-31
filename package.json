@@ -13,6 +13,8 @@
     "cors": "^2.5.2",
     "express": "^4.10.2",
     "marked": "^0.3.2",
+    "moment": "^2.10.6",
+    "moment-timezone": "^0.4.0-2015d",
     "request": "^2.47.0",
     "rsvp": "^3.0.14",
     "underscore": "^1.7.0",
