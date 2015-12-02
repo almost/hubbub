@@ -24,17 +24,17 @@ describe('GithubClient', function () {
     beforeEach(function () {
       result = github.createFork("bob", "my-blog");
     });
-    
+
     it('should post to the forks resource for the repo', function () {
       expect(requests[0].options.method).to.equal("POST");
       expect(requests[0].options.url).to.equal('https://api.github.com/repos/bob/my-blog/forks');
     });
-    
+
     it('should report ok if statusCode is 202', function () {
       requests[0].response.resolve({statusCode: 202});
       expect(result.state).to.equal('resolved');
     });
-    
+
     it('should fail if statusCode is not 202', function () {
       requests[0].response.resolve({statusCode: 200});
       expect(result.state).to.equal('rejected');
@@ -144,12 +144,12 @@ describe('GithubClient', function () {
       expect(requests[0].options.method).to.equal("POST");
       expect(requests[0].options.url).to.equal("https://api.github.com/repos/targetBill/my-repo/pulls");
     });
-    
+
     it('should post the origin and target branches', function () {
       expect(requests[0].options.body.head).to.equal("sourceBob:source-branch");
       expect(requests[0].options.body.base).to.equal("target-branch");
     });
-    
+
     it('should include title and body in PR', function () {
       expect(requests[0].options.body.title).to.equal("I MAKE PR");
       expect(requests[0].options.body.body).to.equal("HELLO");
@@ -160,7 +160,7 @@ describe('GithubClient', function () {
       expect(result.state).to.equal('resolved');
     });
   });
-  
+
   describe('getPullRequest', function () {
     var result;
     beforeEach(function () {
@@ -171,14 +171,37 @@ describe('GithubClient', function () {
       expect(requests[0].options.method).to.equal("GET");
       expect(requests[0].options.url).to.equal("https://api.github.com/repos/sourceBob/my-repo/pulls/99");
     });
-    
+
     it('should return data if the response is a 200', function () {
       requests[0].response.resolve({statusCode: 200, body: {number: 99}});
       expect(result.value).to.eql({number: 99});
     });
-    
+
     it('should raise an error if the response is not 200', function () {
       requests[0].response.resolve({statusCode: 201, body: {number: 99}});
+      expect(result.state).to.equal('rejected');
+    });
+
+  });
+
+  describe('listPullRequests', function () {
+    var result;
+    beforeEach(function () {
+      result = github.listPullRequests("sourceBob", "my-repo", "gh-pages", "open");
+    });
+
+    it('should list pull resources', function () {
+      expect(requests[0].options.method).to.equal("GET");
+      expect(requests[0].options.url).to.equal("https://api.github.com/repos/sourceBob/my-repo/pulls?base=gh-pages&state=open");
+    });
+
+    it('should return data if the response is a 200', function () {
+      requests[0].response.resolve({statusCode: 200, body: [{number: 99}]});
+      expect(result.value).to.eql([{number: 99}]);
+    });
+
+    it('should raise an error if the response is not 200', function () {
+      requests[0].response.resolve({statusCode: 201, body: [{number: 99}]});
       expect(result.state).to.equal('rejected');
     });
 

@@ -166,7 +166,7 @@ app.get('/help', function (req, res) {
 });
 
 
-// Check forks on every startup (happend asynchronously)
+// Check forks on every startup (happens asynchronously)
 ensureForksExist();
 
 app.listen(port, function () {

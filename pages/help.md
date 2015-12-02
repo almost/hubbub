@@ -57,7 +57,6 @@ END_COMMENTS
 
    - The CSS class `hubbub-sending` will be added to the form while
      the comments are in the process of sending.
-   - The CSS class `hubbub-sending` will be added to the form while 
    - New comments added to the to the pending comments `DIV` will be
      given the CSS class `hubbub-pending`, they will also briefly be
      given the class `hubbub-added` (you can use this to apply CSS

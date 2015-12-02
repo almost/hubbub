@@ -12,6 +12,7 @@
     "config": "^1.7.0",
     "cors": "^2.5.2",
     "express": "^4.10.2",
+    "invariant": "^2.2.0",
     "marked": "^0.3.2",
     "moment": "^2.10.6",
     "moment-timezone": "^0.4.0-2015d",
@@ -26,7 +27,8 @@
     "sinon": "^1.11.1"
   },
   "scripts": {
-    "test": "mocha tests/*.js"
+    "test": "mocha tests/*.js",
+    "start": "node server.js"
   },
   "author": "Thomas Parslow",
   "license": "MIT"

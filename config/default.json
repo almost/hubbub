@@ -8,8 +8,8 @@
       "user": "SITE_USER",
       "repo": "SITE_REPO",
       "branch": "SITE_BRANCH",
-      "prefix": "URL_PREFIX",
-      "suffix": "URL_SUFFIX",
+      "prefix": "",
+      "suffix": "markdown",
       "commentsEndMarker": "COMMENTS_END"
     }
   },

@@ -12,12 +12,12 @@ describe('Commenter', function () {
     github = {
       user: 'gh-user'
     };
-    _.each(['createBranch', 'updateFork', 'editFile', 'createPullRequest'], function (meth) {
+    _.each(['createBranch', 'updateFork', 'editFile', 'createPullRequest', 'listPullRequests'], function (meth) {
       github[meth] = sinon.stub();
       github[meth].promise = new MockRSVP(meth);
       github[meth].onCall(0).returns(github[meth].promise);
     });
-    
+
     inserter = sinon.spy();
     site = {
       user: 'site-user',
@@ -42,7 +42,7 @@ describe('Commenter', function () {
         github.updateFork.promise.reject(new Error("What's wrong with your face?"));
         expect(github.createBranch.called).to.be.ok();
       });
-      
+
       it('should create a branch', function () {
         github.updateFork.promise.resolve();
         expect(github.createBranch.calledWith('gh-user','the-repo', 'some-branch')).to.be.ok();
@@ -62,7 +62,7 @@ describe('Commenter', function () {
         github.createBranch.onCall(1).returns(secondCreateBranchResult);
         github.createBranch.promise.reject({statusCode: 422});
         secondCreateBranchResult.resolve();
-        
+
         expect(result.state).to.equal('resolved');
         expect(result.value).to.match(/^comment-[^\-]+-2$/);
       });
@@ -85,29 +85,33 @@ describe('Commenter', function () {
       commenter._createCommentBranch.returns(createBranchResult);
       result = commenter.createComment('/test/somewhere/file.ext', {name: "Me"}, "Hello world!");
     });
-    
+
     it('should create the branch with _createCommentBranch', function () {
+      github.listPullRequests.promise.resolve([]);
       expect(commenter._createCommentBranch.called).to.be.ok();
     });
 
     it('should edit the file on the branch returned by _createCommentBranch', function () {
+      github.listPullRequests.promise.resolve([]);
       createBranchResult.resolve('comment-branch');
       // Ignoring final arugment (commit message)
       expect(github.editFile.calledWith('gh-user', 'the-repo', 'comment-branch', '/test/somewhere/file.ext')).to.be.ok();
     });
 
     it('should create a pull request back to the origin site', function () {
+      github.listPullRequests.promise.resolve([]);
       createBranchResult.resolve('comment-branch');
       github.editFile.promise.resolve({});
-      expect(github.createPullRequest.firstCall.args).to.eql(['gh-user', 'the-repo', 'comment-branch', 'site-user', 'some-branch', "hubbub: New comment from Me", "Hello world!"]);
+      expect(github.createPullRequest.firstCall.args).to.eql(['gh-user', 'the-repo', 'comment-branch', 'site-user', 'some-branch', "hubbub: New comments", ""]);
     });
 
     it('should return success after the pull request is created', function () {
       createBranchResult.resolve('comment-branch');
       github.editFile.promise.resolve({});
       github.createPullRequest.promise.resolve({});
+      github.listPullRequests.promise.resolve([]);
       expect(result.state).to.equal('resolved');
     });
   });
-  
+
 });
