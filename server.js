@@ -52,7 +52,7 @@ function ensureForksExist() {
 
 // Convert a post url path to a source file path within git
 function urlPathToSourceFile(urlPath, prefix, suffix) {
-  return prefix + "_posts/" + urlPath.split('/').slice(-5, -1).join('-') + "." + suffix;
+  return prefix + urlPath.split('/').slice(-5, -1).join('-') + "." + suffix;
 }
 
 app.get('/hubbub.js', function (req, res) {

@@ -8,7 +8,7 @@
       "user": "SITE_USER",
       "repo": "SITE_REPO",
       "branch": "SITE_BRANCH",
-      "prefix": "",
+      "prefix": "_posts/",
       "suffix": "markdown",
       "commentsEndMarker": "COMMENTS_END"
     }
