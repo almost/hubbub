@@ -51,8 +51,20 @@ function ensureForksExist() {
 
 
 // Convert a post url path to a source file path within git
-function urlPathToSourceFile(urlPath, prefix, suffix) {
-  return prefix + urlPath.split('/').slice(-5, -1).join('-') + "." + suffix;
+function urlPathToSourceFile(urlPath, urlMatchRegexp, prefix, suffix) {
+  // Takes the last 4 segments of the url and joins them with dashes
+  // instead of slashes and adds prefix and suffic from the config. So
+  // http://example.com/myblog/meta/2012/03/15/guest-blogs/ becomes
+  // _posts/2012-03-15-guest-blogs.markdown
+
+  var match = new RegExp(urlMatchRegexp).exec(urlPath);
+
+  if (!match) {
+    throw new Error("Can't figure out file path for post. URL does not match our regular expression");
+  }
+  var fileName = (match[1] || match[0]).replace(/\//g, '-');
+
+  return prefix + fileName + suffix;
 }
 
 app.get('/hubbub.js', function (req, res) {
@@ -99,7 +111,7 @@ app.post('/api/:site/comments', function (req, res) {
   }
 
 
-  var sourcePath = urlPathToSourceFile(postPath, req.site.prefix, req.site.suffix);
+  var sourcePath = urlPathToSourceFile(postPath, req.site.urlMatchRegexp, req.site.prefix, req.site.suffix);
   var preprocessedComment = commentTemplate({comment: comment, metadata: metadata, moment: moment()});
 
   commenter.createComment(sourcePath, metadata, preprocessedComment)

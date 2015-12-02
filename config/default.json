@@ -8,8 +8,9 @@
       "user": "SITE_USER",
       "repo": "SITE_REPO",
       "branch": "SITE_BRANCH",
+      "urlMatchRegexp": ".*\\/(\\d+\\/\\d+\\/\\d+\\/.*)\\/$",
       "prefix": "_posts/",
-      "suffix": "markdown",
+      "suffix": ".markdown",
       "commentsEndMarker": "COMMENTS_END"
     }
   },
