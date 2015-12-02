@@ -21,6 +21,8 @@ It will ask you for a Github username *and* a password. This is for the commente
 Manual Deployment
 -----------------
 
+To run the Hubbub server you'll first need to install Node.JS and NPM which you can get [nodejs.org](http://nodejs.org).
+
 To install the dependencies required by the Hubbub server run the following command from the project directory:
 
 ```
