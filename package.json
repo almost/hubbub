@@ -18,8 +18,10 @@
     "moment-timezone": "^0.4.0-2015d",
     "request": "^2.47.0",
     "rsvp": "^3.0.14",
+    "sha1": "^1.1.1",
     "underscore": "^1.7.0",
-    "url-template": "^2.0.4"
+    "url-template": "^2.0.4",
+    "uuid": "^2.0.1"
   },
   "devDependencies": {
     "chai": "^1.10.0",

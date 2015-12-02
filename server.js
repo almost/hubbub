@@ -5,6 +5,7 @@ var express = require('express'),
     marked = require('marked'),
     moment = require('moment-timezone'),
     cors = require('cors'),
+    uuid = require('uuid'),
     _ = require('underscore'),
     config = require('config'),
     GithubClient = require('./lib/github-client'),
@@ -114,7 +115,11 @@ app.post('/api/:site/comments', function (req, res) {
   var sourcePath = urlPathToSourceFile(postPath, req.site.urlMatchRegexp, req.site.prefix, req.site.suffix);
   var preprocessedComment = commentTemplate({comment: comment, metadata: metadata, moment: moment()});
 
-  commenter.createComment(sourcePath, metadata, preprocessedComment)
+  // In the future this might be used to allow ediitng and deletion of
+  // pending comments
+  var commentPassword = uuid.v4();
+
+  commenter.createComment(sourcePath, metadata, preprocessedComment, commentPassword)
     .then(function (sentDetails) {
       // IDEA: In the future when we support message editing the id
       // should contain an hmac with the secret key. That way the id
@@ -122,7 +127,7 @@ app.post('/api/:site/comments', function (req, res) {
       // the id is the message author.
       res.json({
         html: marked(preprocessedComment),
-        update_url: req.protocol + '://' + req.get('host') + '/api/' + req.params.site + '/comments/' + sentDetails.pullRequestNumber
+        update_url: req.protocol + '://' + req.get('host') + '/api/' + req.params.site + '/comments/' + sentDetails.pullRequestNumber + '-' + commentPassword
       });
     })
     .catch(function (err) {
@@ -151,8 +156,9 @@ app.get('/api/:site/comments', function (req, res) {
 // deleting
 app.get('/api/:site/comments/:id', function (req, res) {
   var id = req.params.id;
+  var prNumber = id.split('-')[0];
 
-  github.getPullRequest(req.site.user, req.site.repo, id)
+  github.getPullRequest(req.site.user, req.site.repo, prNumber)
     .then(function (pullRequest) {
       var state;
       if (pullRequest.state === 'open') {
