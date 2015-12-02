@@ -14,5 +14,6 @@
       "commentsEndMarker": "COMMENTS_END"
     }
   },
-  "commentTemplate": "Comment by <%- metadata.name %>\n--------\n<%- comment %>\n"
+  "markdownCommentSyntax": "<!--- <%= data %> -->",
+  "commentTemplate": "Comment by <%- metadata.name %> on <%- moment.format('lll') %>\n--------\n<%- comment %>\n"
 }

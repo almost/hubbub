@@ -24,7 +24,7 @@ describe('Commenter', function () {
       repo: 'the-repo',
       branch: 'some-branch'
     };
-    commenter = new Commenter(github, site, inserter);
+    commenter = new Commenter(github, site);
   });
 
   describe('_createCommentBranch', function () {
@@ -83,7 +83,7 @@ describe('Commenter', function () {
       createBranchResult = new MockRSVP("createCommentBranch");
       sinon.stub(commenter, '_createCommentBranch');
       commenter._createCommentBranch.returns(createBranchResult);
-      result = commenter.createComment('/test/somewhere/file.ext', {name: "Me"}, "Hello world!", "password");
+      result = commenter.createComment(inserter, '/test/somewhere/file.ext', {name: "Me"}, "Hello world!", "password");
     });
 
     it('should create the branch with _createCommentBranch', function () {

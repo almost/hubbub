@@ -6,6 +6,7 @@ var express = require('express'),
     moment = require('moment-timezone'),
     cors = require('cors'),
     uuid = require('uuid'),
+    sha1 = require('sha1'),
     _ = require('underscore'),
     config = require('config'),
     GithubClient = require('./lib/github-client'),
@@ -25,6 +26,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 var commentTemplate = _.template(config.get('commentTemplate'));
+// Here we're talking about a code comment not a blog comment
+var markdownCommentSyntax = _.template(config.get('markdownCommentSyntax'), {variable: 'data'});
 var sites = config.get('sites');
 var github = new GithubClient(config.get('commentUser.user'), config.get('commentUser.auth'));
 
@@ -65,6 +68,10 @@ function urlPathToSourceFile(urlPath, urlMatchRegexp, prefix, suffix) {
   }
   var fileName = (match[1] || match[0]).replace(/\//g, '-');
 
+  if (fileName.indexOf('..') !== -1) {
+    throw new Error("URL can't contain ..");
+  }
+
   return prefix + fileName + suffix;
 }
 
@@ -90,7 +97,7 @@ app.param('site', function (req, res, next, siteId) {
 // Post a new comment
 app.post('/api/:site/comments', function (req, res) {
   var commentInserter = makeCommentInserter(req.site.commentsEndMarker);
-  var commenter = new Commenter(github, req.site, commentInserter);
+  var commenter = new Commenter(github, req.site);
 
   var postPath = req.body.post;
   var comment = req.body.comment;
@@ -111,15 +118,19 @@ app.post('/api/:site/comments', function (req, res) {
     return;
   }
 
-
-  var sourcePath = urlPathToSourceFile(postPath, req.site.urlMatchRegexp, req.site.prefix, req.site.suffix);
-  var preprocessedComment = commentTemplate({comment: comment, metadata: metadata, moment: moment()});
-
   // In the future this might be used to allow ediitng and deletion of
   // pending comments
   var commentPassword = uuid.v4();
+  var commentKey = sha1(commentPassword);
 
-  commenter.createComment(sourcePath, metadata, preprocessedComment, commentPassword)
+  var sourcePath = urlPathToSourceFile(postPath, req.site.urlMatchRegexp, req.site.prefix, req.site.suffix);
+  var preprocessedComment =
+    "\n" + markdownCommentSyntax("START COMMENT " + commentKey) +  "\n\n" +
+    commentTemplate({comment: comment, metadata: metadata, moment: moment()}) + "\n\n" +
+    markdownCommentSyntax("END COMMENT " + commentKey) +  "\n";
+
+
+  commenter.createComment(commentInserter, sourcePath, metadata, preprocessedComment, commentKey)
     .then(function (sentDetails) {
       // IDEA: In the future when we support message editing the id
       // should contain an hmac with the secret key. That way the id
@@ -127,7 +138,8 @@ app.post('/api/:site/comments', function (req, res) {
       // the id is the message author.
       res.json({
         html: marked(preprocessedComment),
-        update_url: req.protocol + '://' + req.get('host') + '/api/' + req.params.site + '/comments/' + sentDetails.pullRequestNumber + '-' + commentPassword
+        update_url: req.protocol + '://' + req.get('host') + '/api/' + req.params.site + '/comments/' +
+          sentDetails.pullRequestNumber + '/' + commentPassword + '/' + encodeURIComponent(postPath)
       });
     })
     .catch(function (err) {
@@ -154,9 +166,8 @@ app.get('/api/:site/comments', function (req, res) {
 
 // Comment status, will later also support comment editing and
 // deleting
-app.get('/api/:site/comments/:id', function (req, res) {
-  var id = req.params.id;
-  var prNumber = id.split('-')[0];
+app.get('/api/:site/comments/:prNumber/:password/:path', function (req, res) {
+  var prNumber = req.params.prNumber
 
   github.getPullRequest(req.site.user, req.site.repo, prNumber)
     .then(function (pullRequest) {
@@ -173,7 +184,30 @@ app.get('/api/:site/comments/:id', function (req, res) {
       if (error.statusCode === 404) {
         res.status(404).json({error: "Not found"});
       } else {
+        console.error(err.message ? err.message : err);
         res.status(500).json({error: "Failed to retrieve Pull Request details"});
+      }
+    });
+});
+
+app.delete('/api/:site/comments/:prNumber/:password/:path', function (req, res) {
+  var commenter = new Commenter(github, req.site);
+  var postPath = decodeURI(req.params.path);
+  var password = req.params.password;
+  var sourcePath = urlPathToSourceFile(postPath, req.site.urlMatchRegexp, req.site.prefix, req.site.suffix);
+  var commentKey = sha1(password);
+  commenter.deleteComment(sourcePath, commentKey)
+    .then(function () {
+      console.log('OK');
+      res.json({status: "ok"});
+    })
+    .catch(function (err) {
+      console.log('ERR', err);
+      if (err.statusCode === 404) {
+        res.status(404).json({error: "Not found"});
+      } else {
+        console.error(err.message ? err.message : err);
+        res.status(500).json({error: "Failed to delete comment"});
       }
     });
 });
