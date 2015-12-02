@@ -121,6 +121,10 @@
 
       xmlhttp.send();
     });
+
+    // Return the ones from the cache eright now, the callback will be
+    // used once we've checked them
+    return pendingComments;
   }
 
   function addPendingCommentToDOM(container, comment) {
@@ -135,6 +139,7 @@
     setTimeout(function () {
       commentEl.className = "hubbub-pending";
     }, 100);
+    return commentEl;
   }
 
   // Trap all submit events and check for a data-hubbub attribute, if
@@ -193,17 +198,28 @@
   }
   document.addEventListener('submit', onSubmit);
 
+  function showPendingComments (previewContainer) {
+    var pendingComments = getPendingComments(null, gotPendingComments);
+    var previewEls = pendingComments.map(function (pendingComment) {
+      return addPendingCommentToDOM(previewContainer, pendingComment);
+    });
+    function gotPendingComments(verifiedPending) {
+      // No we've checked with the server which of the comments are
+      // still pending we should remove any that aren't
+      pendingComments.forEach(function (pendingComment, index) {
+        if (verifiedPending.indexOf(pendingComment) === -1) {
+          previewEls[index].parentNode.removeChild(previewEls[index]);
+        }
+      });
+    }
+  }
+
 
   // If a pending comments container is present then fill it with any pending comments we've stored
   function onDocumentReady() {
     var previewContainer = document.querySelector('[data-hubbub-pendingcomments]');
     if (previewContainer) {
-      getPendingComments(null, gotPendingComments);
-    }
-    function gotPendingComments(pendingComments) {
-      pendingComments.forEach(function (pendingComment) {
-        addPendingCommentToDOM(previewContainer, pendingComment);
-      });
+      showPendingComments(previewContainer);
     }
   }
   document.addEventListener('DOMContentLoaded', onDocumentReady);
