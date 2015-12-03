@@ -141,11 +141,14 @@
     commentEl.innerHTML = html;
     container.appendChild(commentEl);
     var editBar = document.createElement('div');
-    var editButton = document.createElement('a');
-    editBar.appendChild(editButton);
+    editBar.className = "hubbub-editbar";
+
     commentEl.appendChild(editBar);
-    editButton.textContent = "Delete pending comment";
-    editButton.addEventListener('click', function () {
+
+    var deleteButton = document.createElement('a');
+    deleteButton.textContent = "Delete pending comment";
+    deleteButton.className = "hubbub-delete-button";
+    deleteButton.addEventListener('click', function () {
       if (!confirm("Delete comment?")) return;
       deleteComment(comment, function (deleted) {
         if (deleted) {
@@ -155,6 +158,8 @@
         }
       });
     });
+
+    editBar.appendChild(deleteButton);
 
     // Remove the hubbub-added class to allow CSS transitions to
     // work
