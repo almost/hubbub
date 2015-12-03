@@ -63,6 +63,13 @@
     localStorage["hubbubPendingComments:" + post] = JSON.stringify(pendingComments);
   }
 
+  function removePendingComment(post, comment) {
+    post = post || defaults.post;
+    var pendingComments = JSON.parse(localStorage["hubbubPendingComments:" + post] || '[]');
+    pendingComments = pendingComments.filter(function (c) { return c.update_url !== comment.update_url; });
+    localStorage["hubbubPendingComments:" + post] = JSON.stringify(pendingComments);
+  }
+
   function clearPendingComments(post) {
     post = post || defaults.post;
     delete localStorage["hubbubPendingComments:" + post];
@@ -133,6 +140,21 @@
     commentEl.className = "hubbub-pending hubbub-added";
     commentEl.innerHTML = html;
     container.appendChild(commentEl);
+    var editBar = document.createElement('div');
+    var editButton = document.createElement('a');
+    editBar.appendChild(editButton);
+    commentEl.appendChild(editBar);
+    editButton.textContent = "Delete pending comment";
+    editButton.addEventListener('click', function () {
+      if (!confirm("Delete comment?")) return;
+      deleteComment(comment, function (deleted) {
+        if (deleted) {
+          commentEl.parentNode.removeChild(commentEl);
+        } else {
+          alert("Failed to delete comment");
+        }
+      });
+    });
 
     // Remove the hubbub-added class to allow CSS transitions to
     // work
@@ -140,6 +162,30 @@
       commentEl.className = "hubbub-pending";
     }, 100);
     return commentEl;
+  }
+
+  function deleteComment(comment, callback) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("DELETE", comment.update_url, true);
+
+    xmlhttp.onload = function (e) {
+      if (xmlhttp.readyState === 4) {
+        if (xmlhttp.status === 200) {
+          removePendingComment(null, comment);
+          callback(true);
+        } else if (xmlhttp.status === 404) {
+          callback(false);
+        } else {
+          callback(false);
+        }
+      }
+    };
+
+    xmlhttp.onerror = function (e) {
+      callback(false);
+    };
+
+    xmlhttp.send();
   }
 
   // Trap all submit events and check for a data-hubbub attribute, if
