@@ -207,7 +207,7 @@ app.delete('/api/:site/comments/:prNumber/:password/:path', function (req, res) 
         res.status(404).json({error: "Not found"});
       } else {
         console.error(err.message ? err.message : err);
-        res.status(500).json({error: "Failed to delete comment"});
+        res.status(500).json({error: req.site.deleteButtonLabel});
       }
     });
 });

@@ -11,7 +11,8 @@
       "urlMatchRegexp": ".*\\/(\\d+\\/\\d+\\/\\d+\\/.*)\\/$",
       "prefix": "_posts/",
       "suffix": ".markdown",
-      "commentsEndMarker": "COMMENTS_END"
+      "commentsEndMarker": "COMMENTS_END",
+      "deleteButtonLabel": "delete"
     }
   },
   "markdownCommentSyntax": "<!--- <%= data %> -->",
