@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/almost/hubbub.png?label=ready&title=Ready)](https://waffle.io/almost/hubbub)
 Hubbub
 ======
 
