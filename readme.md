@@ -16,7 +16,9 @@ You can deploy (for free) to Heroku with the button below:
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/almost/hubbub)
 
-It will ask you for a Github username *and* a password. This is for the commenter user which will be the user which actually creates the pull requests for comments. I strongly suggest you create a new user just for this.
+It will ask you for a Github username *and* a password. This is for the commenter user which will be the user which actually creates the pull requests for comments. I strongly suggest you create a new user just for this.  
+
+Set `URL_PREFIX` config var to `_posts/` and `URL_SUFFIX` to `.markdown` for file structure like `_posts/2018-12-15-welcome-to-jekyll.markdown`.  
 
 Manual Deployment
 -----------------
