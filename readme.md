@@ -9,6 +9,11 @@ Initial development by [Thomas Parslow](http://almostobsolete.net). Pull request
 
 [![Build Status](https://travis-ci.org/almost/hubbub.svg)](https://travis-ci.org/almost/hubbub) 
 
+**`_config.yml` Changes**
+----------------
+
+You need to have `permalink: pretty` in `_config.yml`.
+
 Quick Deployment
 ----------------
 
